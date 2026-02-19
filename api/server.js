@@ -1,9 +1,11 @@
-// TON空投Bot - Node.js版本（备用）
-// 如果Python版本有问题，使用这个
+// TON空投Bot - Node.js版本（完整功能）
+// 实际调用Telegram API发送回复
 
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Node.js 18+ 内置了fetch，无需额外导入
 
 // 中间件
 app.use(express.json());
@@ -30,7 +32,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Telegram Webhook
-app.post('/api/webhook', (req, res) => {
+app.post('/api/webhook', async (req, res) => {
   try {
     const { message } = req.body;
     
@@ -38,30 +40,64 @@ app.post('/api/webhook', (req, res) => {
       return res.json({ status: 'ignored', reason: 'No message' });
     }
     
-    const { text, from } = message;
+    const { text, from, chat } = message;
     const userId = from?.id;
     const username = from?.username || 'user';
+    const chatId = chat?.id;
     
     if (!text) {
       return res.json({ status: 'ignored', reason: 'No text' });
     }
     
-    // 处理命令
-    const response = processCommand(text, userId, username);
+    // 立即响应Telegram，避免超时
+    res.json({ status: 'received' });
     
-    res.json({
-      status: 'processed',
-      user_id: userId,
-      username: username,
-      command: text,
-      response: response.substring(0, 200) // 限制长度
-    });
+    // 处理命令
+    const responseText = processCommand(text, userId, username);
+    
+    // 调用Telegram API发送回复
+    await sendTelegramMessage(chatId, responseText);
     
   } catch (error) {
     console.error('Webhook error:', error);
-    res.status(500).json({ error: error.message });
+    // 已经发送了响应，只能记录错误
   }
 });
+
+// 发送Telegram消息函数
+async function sendTelegramMessage(chatId, text) {
+  const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+  
+  if (!TELEGRAM_BOT_TOKEN || !chatId) {
+    console.error('Missing Telegram token or chat ID');
+    return;
+  }
+  
+  try {
+    const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: text,
+        parse_mode: 'HTML'
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (!result.ok) {
+      console.error('Telegram API error:', result);
+    } else {
+      console.log('Message sent successfully to chat:', chatId);
+    }
+    
+  } catch (error) {
+    console.error('Failed to send Telegram message:', error);
+  }
+}
 
 // 命令处理函数
 function processCommand(command, userId, username) {
