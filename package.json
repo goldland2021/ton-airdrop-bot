@@ -1,0 +1,23 @@
+{
+  "name": "ton-airdrop-bot",
+  "version": "1.0.0",
+  "description": "TON空投仪表盘Telegram Bot",
+  "main": "api/server.js",
+  "scripts": {
+    "start": "node api/server.js",
+    "dev": "nodemon api/server.js",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["ton", "telegram", "bot", "airdrop", "crypto"],
+  "author": "goldland2021",
+  "license": "MIT"
+}
