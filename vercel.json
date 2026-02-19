@@ -1,16 +1,15 @@
 {
-  "functions": {
-    "api/simple_bot.py": {
-      "maxDuration": 10
-    }
-  },
-  "rewrites": [
+  "version": 2,
+  "builds": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/simple_bot.py"
+      "src": "api/server.js",
+      "use": "@vercel/node"
     }
   ],
-  "env": {
-    "PYTHON_VERSION": "3.9"
-  }
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/api/server.js"
+    }
+  ]
 }
