@@ -1,0 +1,43 @@
+# 🚀 TON空投Bot - Vercel快速部署命令
+
+## 步骤1: 初始化Git仓库
+cd "C:\Users\Administrator\.openclaw\workspace\TON_Airdrop_Bot"
+git init
+git add .
+git commit -m "初始提交: TON空投Bot Vercel版本"
+
+## 步骤2: 连接到GitHub（替换YOUR_USERNAME）
+git remote add origin https://github.com/YOUR_USERNAME/ton-airdrop-bot.git
+git branch -M main
+
+## 步骤3: 上传代码
+git push -u origin main
+
+## 步骤4: 访问Vercel部署
+# 打开浏览器访问: https://vercel.com/new
+# 使用GitHub登录
+# 导入仓库: YOUR_USERNAME/ton-airdrop-bot
+
+## 步骤5: 配置环境变量
+# 在Vercel项目设置中添加:
+# TELEGRAM_BOT_TOKEN = 7977389930:AAEcWTH5gt9OX7vlCgKlD0Y-bkFjDTf_jzM
+# WEBHOOK_SECRET = your_secret_key (可选)
+
+## 步骤6: 部署
+# 点击"Deploy"按钮
+# 等待1-2分钟构建完成
+# 获得部署URL（如: https://ton-airdrop-bot.vercel.app）
+
+## 步骤7: 配置Telegram Webhook
+# 替换YOUR_VERCEL_URL为你的实际URL
+curl -X POST https://api.telegram.org/bot7977389930:AAEcWTH5gt9OX7vlCgKlD0Y-bkFjDTf_jzM/setWebhook -H "Content-Type: application/json" -d '{"url": "YOUR_VERCEL_URL/api"}'
+
+## 步骤8: 测试
+# 在Telegram搜索 @TONAirdropDashboardBot
+# 发送 /start 测试
+# 测试所有命令
+
+## 故障排除
+# 查看Vercel日志: Vercel控制台 → Functions → Logs
+# 验证Webhook: curl https://api.telegram.org/bot7977389930:AAEcWTH5gt9OX7vlCgKlD0Y-bkFjDTf_jzM/getWebhookInfo
+# 重新部署: git push origin main
