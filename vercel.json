@@ -1,16 +1,34 @@
 {
   "functions": {
-    "api/bot.py": {
+    "api/simple_bot.py": {
       "maxDuration": 10
     }
   },
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/bot.py"
+      "destination": "/api/simple_bot.py"
     }
   ],
   "env": {
     "PYTHON_VERSION": "3.9"
-  }
+  },
+  "builds": [
+    {
+      "src": "api/simple_bot.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/api/simple_bot.py",
+      "methods": ["GET"]
+    },
+    {
+      "src": "/api/webhook",
+      "dest": "/api/simple_bot.py",
+      "methods": ["POST"]
+    }
+  ]
 }
